@@ -2,9 +2,10 @@ import {
     PerspectiveCamera, Scene, WebGLRenderer,
     Mesh, Fog, Object3D, SphereBufferGeometry, MeshPhongMaterial, AmbientLight, DirectionalLight, Camera
 } from 'three';
-import {EffectComposer, RenderPass, ShaderPass, DotScreenShader} from './three-helper';
 // import myShader from './testShader.glsl'
 // import './app.css'
+import {EffectComposer, RenderPass, ShaderPass} from './three/postprocessing'
+import {DotScreenShader, RGBShiftShader} from './three/shaders'
 
 let camera: PerspectiveCamera
 let scene: Scene
@@ -63,21 +64,21 @@ function init() {
 
     const effect = new ShaderPass(DotScreenShader);
     console.log('aaaa: ', effect)
-    // effect.uniforms = {
-    //     scale: {
-    //         value: 4
-    //     }
-    // }
+    effect.uniforms = {
+        scale: {
+            value: 4
+        }
+    }
     composer.addPass(effect);
 
-    // const effect2 = new ShaderPass(RGBShiftShader);
-    // // effect2.uniforms = {
-    // //     amount: {
-    // //         value: 0.0015
-    // //     }
-    // // }
-    // effect2.renderToScreen = true;
-    // composer.addPass(effect2);
+    const effect2 = new ShaderPass(RGBShiftShader);
+    // effect2.uniforms = {
+    //     amount: {
+    //         value: 0.0015
+    //     }
+    // }
+    effect2.renderToScreen = true;
+    composer.addPass(effect2);
 
     //
 

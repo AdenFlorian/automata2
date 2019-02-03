@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "sourceMap": true,
+        "strict": true,
+        "noImplicitReturns": true,
+        "outDir": "dist",
+        "target": "es6",
+        "module": "commonjs",
+        "lib": [
+            "dom",
+            "es7"
+        ],
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "plugins": [
+            {
+                "name": "typescript-tslint-plugin"
+            }
+        ]
+    },
+    "include": [
+        "src/**.*.ts"
+    ]
+}

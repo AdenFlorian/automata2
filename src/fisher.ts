@@ -1,5 +1,10 @@
 // https://jameshfisher.com/2017/10/22/webgl-game-of-life.html
 
+// @ts-ignore
+import displayShader from './display.glsl'
+// @ts-ignore
+import stepperShader from './stepper.glsl'
+
 console.log('start')
 const startStateImg = new Image()
 
@@ -27,11 +32,11 @@ startStateImg.onload = function () {
     )
     const fragShaderDisplay = createShader(
         webGlContext.FRAGMENT_SHADER,
-        document.getElementById("fragment-shader-display")!.innerText
+        displayShader
     )
     const fragShaderStepper = createShader(
         webGlContext.FRAGMENT_SHADER,
-        document.getElementById("fragment-shader-stepper")!.innerText
+        stepperShader
     )
 
     function createProgram(vertexShader: WebGLShader, fragmentShader: WebGLShader) {

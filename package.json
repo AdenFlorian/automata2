@@ -6,6 +6,9 @@
   "scripts": {
     "start": "parcel src/index.html"
   },
+  "staticFiles": {
+    "watcherGlob": "**"
+  },
   "dependencies": {},
   "devDependencies": {
     "glslify-bundle": "^5.1.1",

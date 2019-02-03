@@ -3,9 +3,9 @@ precision mediump float;
 uniform sampler2D previousState;
 
 int wasAlive(vec2 coord) {
-  if (coord.x < 0.0 || 64.0 < coord.x || coord.y < 0.0 || 64.0 < coord.y) return 0;
+  if (coord.x < 0.0 || 1024.0 < coord.x || coord.y < 0.0 || 1024.0 < coord.y) return 0;
 
-  vec4 px = texture2D(previousState, coord / 64.0);
+  vec4 px = texture2D(previousState, coord / 1024.0);
 
   return px.r < 0.1 ? 1 : 0;
 }

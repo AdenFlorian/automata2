@@ -3,7 +3,7 @@
 // @ts-ignore
 import displayShader from './display.glsl'
 // @ts-ignore
-import stepperShader from './stepper.glsl'
+import stepperShader from './conway.glsl'
 
 console.log('start')
 const startStateImg = new Image()
@@ -103,7 +103,6 @@ startStateImg.onload = function () {
     requestAnimationFrame(loop)
 
     function loop(): void {
-        console.log('loop')
         const previousStateIndex = 1 - nextStateIndex
 
         webGlContext.bindFramebuffer(webGlContext.FRAMEBUFFER, framebuffers[nextStateIndex])

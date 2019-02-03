@@ -1,21 +1,66 @@
 <!DOCTYPE html>
+<html>
 
 <head>
-    <title>three.js webgl - postprocessing</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>Babylon - Getting Started</title>
     <style>
+        html,
         body {
-            margin: 0px;
-            background-color: #000000;
             overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
         }
     </style>
+    <script src="./game.ts"></script>
 </head>
 
 <body>
-    hello world
-    <script src="./app.ts"></script>
+    <canvas id="renderCanvas"></canvas>
+    <!-- TODO Use react to put shaders here -->
+    <script type="application/vertexShader" id="vertexShaderCode">
+        #ifdef GL_ES
+            precision highp float;
+        #endif
+    
+        // Attributes
+        attribute vec3 position;
+        attribute vec2 uv;
+    
+        // Uniforms
+        uniform mat4 worldViewProjection;
+    
+        // Normal
+        varying vec2 vUV;
+    
+        void main(void) {
+            gl_Position = worldViewProjection * vec4(position, 1.0);
+        
+            vUV = uv;
+        }
+    </script>
+
+    <script type="application/fragmentShader" id="fragmentShaderCode">
+        #ifdef GL_ES
+            precision mediump float;
+        #endif
+    
+        varying vec2 vUV;
+
+        uniform float time;
+    
+        void main(void) {
+            gl_FragColor = vec4((sin(time) + 1.0) / 2.0, vUV.y, 1.0, 1.0);
+        }
+    </script>
 </body>
 
 </html>

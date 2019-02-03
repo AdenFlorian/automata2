@@ -1,80 +1,97 @@
 import {
-    PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry,
-    MeshNormalMaterial, Mesh, ShaderMaterial, Clock
+    PerspectiveCamera, Scene, WebGLRenderer,
+    Mesh, Fog, Object3D, SphereBufferGeometry, MeshPhongMaterial, AmbientLight, DirectionalLight, Camera
 } from 'three';
-import myShader from './testShader.glsl'
-import './app.css'
-import {EffectComposer, RenderPass, ShaderPass, DotScreenShader, RGBShiftShader} from 'postprocessing'
-
-console.log('hello world 2')
+import {EffectComposer, RenderPass, ShaderPass, DotScreenShader} from './three-helper';
+// import myShader from './testShader.glsl'
+// import './app.css'
 
 let camera: PerspectiveCamera
 let scene: Scene
 let renderer: WebGLRenderer
-let geometry: BoxGeometry
-let material: MeshNormalMaterial
-let mesh: Mesh
-let clock: Clock
-
-const uniforms = {
-    // fogDensity: {value: 0.45},
-    // fogColor: {value: new THREE.Vector3(0, 0, 0)},
-    time: {value: 1.0},
-    // canvasSize: {x: 0, y: 0}
-    // uvScale: {value: new THREE.Vector2(3.0, 1.0)},
-    // texture1: {value: textureLoader.load('textures/lava/cloud.png')},
-    // texture2: {value: textureLoader.load('textures/lava/lavatile.jpg')}
-};
+let composer: THREE.EffectComposer
+let object: Object3D
+let light: DirectionalLight
 
 init();
 animate();
 
 function init() {
 
-    renderer = new WebGLRenderer({antialias: true});
+    renderer = new WebGLRenderer();
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    clock = new Clock();
+    //
 
-    camera = new PerspectiveCamera(5, window.innerWidth / window.innerHeight, 0.01, 10);
-    camera.position.z = 1;
+    camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 400;
 
     scene = new Scene();
+    scene.fog = new Fog(0x000000, 1, 1000);
 
-    geometry = new BoxGeometry(0.2, 0.2, 0.2);
-    // material = new ShaderMaterial();
+    object = new Object3D();
+    scene.add(object);
 
-    // uniforms.canvasSize.x = renderer.getSize().width
-    // uniforms.canvasSize.y = renderer.getSize().height
+    let geometry = new SphereBufferGeometry(1, 4, 4);
+    let material = new MeshPhongMaterial({color: 0xffffff, flatShading: true});
 
-    var postMaterial = new ShaderMaterial({
-        // vertexShader: document.querySelector('#post-vert').textContent.trim(),
-        fragmentShader: myShader,
-        uniforms
-        // uniforms: {
-        //     cameraNear: {value: camera.near},
-        //     cameraFar: {value: camera.far},
-        //     tDiffuse: {value: target.texture},
-        //     tDepth: {value: target.depthTexture}
-        // }
-    });
+    for (let i = 0; i < 100; i++) {
 
-    mesh = new Mesh(geometry, postMaterial);
-    scene.add(mesh);
+        let mesh = new Mesh(geometry, material);
+        mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+        mesh.position.multiplyScalar(Math.random() * 400);
+        mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+        mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 50;
+        object.add(mesh);
+
+    }
+
+    scene.add(new AmbientLight(0x222222));
+
+    light = new DirectionalLight(0xffffff);
+    light.position.set(1, 1, 1);
+    scene.add(light);
 
     // postprocessing
-    const composer = new EffectComposer(renderer);
+
+    composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
 
-    var dotScreenEffect = new ShaderPass(DotScreenShader);
-    dotScreenEffect.uniforms['scale'].value = 4;
-    composer.addPass(dotScreenEffect);
+    console.log('aaaa: ', DotScreenShader)
 
-    var rgbEffect = new ShaderPass(RGBShiftShader);
-    rgbEffect.uniforms['amount'].value = 0.0015;
-    rgbEffect.renderToScreen = true;
-    composer.addPass(rgbEffect);
+    const effect = new ShaderPass(DotScreenShader);
+    console.log('aaaa: ', effect)
+    // effect.uniforms = {
+    //     scale: {
+    //         value: 4
+    //     }
+    // }
+    composer.addPass(effect);
+
+    // const effect2 = new ShaderPass(RGBShiftShader);
+    // // effect2.uniforms = {
+    // //     amount: {
+    // //         value: 0.0015
+    // //     }
+    // // }
+    // effect2.renderToScreen = true;
+    // composer.addPass(effect2);
+
+    //
+
+    window.addEventListener('resize', onWindowResize, false);
+
+}
+
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
 
 }
 
@@ -82,13 +99,9 @@ function animate() {
 
     requestAnimationFrame(animate);
 
-    // mesh.rotation.x += 0.01;
-    // mesh.rotation.y += 0.02;
+    object.rotation.x += 0.005;
+    object.rotation.y += 0.01;
 
-    var delta = clock.getDelta();
-
-    uniforms.time.value += delta;
-
-    renderer.render(scene, camera);
+    composer.render();
 
 }

@@ -3,7 +3,7 @@ precision mediump float;
 uniform sampler2D previousState;
 
 const float size = 1024.0;
-const float fadeRate = 0.5;
+const float fadeRate = 0.003;
 const float dying = 0.5;
 
 int wasPixelAlive(float pixel) {
@@ -13,8 +13,8 @@ int wasPixelAlive(float pixel) {
 }
 
 int wasPixelDying(float pixel) {
-  // return pixel == dying
-  return pixel < 1.0 && pixel > 0.0
+  return pixel == 1.0
+  // return pixel == (1.0 - fadeRate)
     ? 1
     : 0;
 }
@@ -42,7 +42,7 @@ int wasDying(vec2 coord) {
 
   vec4 px = texture2D(previousState, coord / size);
 
-  return wasPixelDying(px.r);
+  return wasPixelDying(px.g);
 }
 
 void main(void) {
@@ -69,9 +69,9 @@ void main(void) {
   bool nowDying = wasAlive(coord) == 1;
   
   gl_FragColor = nowAlive
-    ? vec4(1.0, coordNormalized.x / 1.0, coordNormalized.y / 1.0, 1.0) 
+    ? vec4(1.0, coordNormalized.x / 1.0, coordNormalized.y / 1.0, 1.0)
     : nowDying
-      ? vec4(dying, coordNormalized.x / 1.0, coordNormalized.y / 1.0, 1.0) 
-      : vec4(0.0, 0.0, 0.0, 1.0) ;
-      // : px - vec4(fadeRate, fadeRate, fadeRate, 1.0);
+      ? vec4((coordNormalized.x / 1.0) - fadeRate, 1.0, (coordNormalized.y / 1.0) - fadeRate, 1.0)
+      : vec4(px.r - fadeRate, px.g - fadeRate, px.b - fadeRate, 1.0); // with fade
+      // : vec4(0.0, 0.0, 0.0, 1.0); // no fase
 }

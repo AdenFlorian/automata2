@@ -129,4 +129,5 @@ startStateImg.onload = function () {
         if (fast) requestAnimationFrame(loop)
     }
 }
-startStateImg.src = "game-of-life.png"
+// startStateImg.src = "conway.png"
+startStateImg.src = "1x2.png"

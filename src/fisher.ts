@@ -10,6 +10,39 @@ import stepperShader from './brian.glsl'
 console.log('start')
 const startStateImg = new Image()
 
+const size = 1024
+
+const startState = get1x2State(size)
+
+function getRandomState(size: number) {
+    const sizeSquared = size * size
+    const state = new Uint8Array(sizeSquared * 3);
+    for (let i = 0; i < sizeSquared; i++) {
+        const intensity = Math.random() < 0.5 ? 255 : 0;
+        state[i * 3] = intensity;
+        state[i * 3 + 1] = intensity;
+        state[i * 3 + 2] = intensity;
+    }
+    return state
+}
+
+function get1x2State(size: number) {
+    const sizeSquared = size * size
+    const state = new Uint8Array(sizeSquared * 3);
+
+    const x = size / 2
+
+    state[x * 3] = 255;
+    state[x * 3 + 1] = 255;
+    state[x * 3 + 2] = 255;
+
+    state[(x + size) * 3] = 255;
+    state[(x + size) * 3 + 1] = 255;
+    state[(x + size) * 3 + 2] = 255;
+
+    return state
+}
+
 startStateImg.onload = function () {
     const canvasElement = document.getElementById("canvas")! as HTMLCanvasElement
     const webGlContext = canvasElement.getContext("webgl")!
@@ -80,7 +113,8 @@ startStateImg.onload = function () {
     const texture0 = webGlContext.createTexture()
     webGlContext.activeTexture(webGlContext.TEXTURE0)
     webGlContext.bindTexture(webGlContext.TEXTURE_2D, texture0)
-    webGlContext.texImage2D(webGlContext.TEXTURE_2D, 0, webGlContext.RGB, webGlContext.RGB, webGlContext.UNSIGNED_BYTE, startStateImg)
+    webGlContext.texImage2D(webGlContext.TEXTURE_2D, 0, webGlContext.RGB, 1024, 1024, 0, webGlContext.RGB, webGlContext.UNSIGNED_BYTE, startState);
+    // webGlContext.texImage2D(webGlContext.TEXTURE_2D, 0, webGlContext.RGB, webGlContext.RGB, webGlContext.UNSIGNED_BYTE, startState)
     webGlContext.texParameteri(webGlContext.TEXTURE_2D, webGlContext.TEXTURE_MAG_FILTER, webGlContext.NEAREST)
     webGlContext.texParameteri(webGlContext.TEXTURE_2D, webGlContext.TEXTURE_MIN_FILTER, webGlContext.NEAREST)
     webGlContext.generateMipmap(webGlContext.TEXTURE_2D)
@@ -88,7 +122,8 @@ startStateImg.onload = function () {
     const texture1 = webGlContext.createTexture()
     webGlContext.activeTexture(webGlContext.TEXTURE0 + 1)
     webGlContext.bindTexture(webGlContext.TEXTURE_2D, texture1)
-    webGlContext.texImage2D(webGlContext.TEXTURE_2D, 0, webGlContext.RGB, webGlContext.RGB, webGlContext.UNSIGNED_BYTE, startStateImg)
+    webGlContext.texImage2D(webGlContext.TEXTURE_2D, 0, webGlContext.RGB, 1024, 1024, 0, webGlContext.RGB, webGlContext.UNSIGNED_BYTE, startState);
+    // webGlContext.texImage2D(webGlContext.TEXTURE_2D, 0, webGlContext.RGB, webGlContext.RGB, webGlContext.UNSIGNED_BYTE, startState)
     webGlContext.texParameteri(webGlContext.TEXTURE_2D, webGlContext.TEXTURE_MAG_FILTER, webGlContext.NEAREST)
     webGlContext.texParameteri(webGlContext.TEXTURE_2D, webGlContext.TEXTURE_MIN_FILTER, webGlContext.NEAREST)
     webGlContext.generateMipmap(webGlContext.TEXTURE_2D)

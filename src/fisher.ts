@@ -3,7 +3,9 @@
 // @ts-ignore
 import displayShader from './display.glsl'
 // @ts-ignore
-import stepperShader from './conway.glsl'
+// import stepperShader from './conway.glsl'
+// @ts-ignore
+import stepperShader from './brian.glsl'
 
 console.log('start')
 const startStateImg = new Image()
@@ -100,7 +102,14 @@ startStateImg.onload = function () {
     webGlContext.framebufferTexture2D(webGlContext.FRAMEBUFFER, webGlContext.COLOR_ATTACHMENT0, webGlContext.TEXTURE_2D, texture1, 0)
 
     let nextStateIndex = 0
-    requestAnimationFrame(loop)
+
+    const fast = true
+
+    if (fast) {
+        requestAnimationFrame(loop)
+    } else {
+        setInterval(loop, 1000)
+    }
 
     function loop(): void {
         const previousStateIndex = 1 - nextStateIndex
@@ -117,7 +126,7 @@ startStateImg.onload = function () {
         webGlContext.drawElements(webGlContext.TRIANGLE_FAN, 4, webGlContext.UNSIGNED_BYTE, 0)
 
         nextStateIndex = previousStateIndex
-        requestAnimationFrame(loop)
+        if (fast) requestAnimationFrame(loop)
     }
 }
 startStateImg.src = "game-of-life.png"

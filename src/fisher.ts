@@ -120,4 +120,4 @@ startStateImg.onload = function () {
         requestAnimationFrame(loop)
     }
 }
-startStateImg.src = "/game-of-life.png"
+startStateImg.src = "game-of-life.png"
